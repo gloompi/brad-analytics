@@ -66,7 +66,7 @@ server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => 
 server.use(express.static(publicDir, { etag: false }));
 
 // Start Server
-const port = parseInt(config["server-port"], 10);
+const port = parseInt(process.env.PORT, 10);
 server.listen(port, () => {
   console.log(`Server is listening on port: ${port}/`);
 });

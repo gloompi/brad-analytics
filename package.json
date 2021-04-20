@@ -9,7 +9,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "config": {
-    "server-port": 7777,
     "server-compress": true
   },
   "repository": {
