@@ -4,3 +4,5 @@ npm-debug.log*
 .DS_Store
 logs
 public/assets/images/**/*.min.*
+yarn.lock
+logs

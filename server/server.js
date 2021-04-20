@@ -27,7 +27,7 @@ if (!fs.existsSync(logFile)) {
 
 // Server Basic Setup
 const server = express();
-server.use(cors);
+server.use(cors());
 
 if (config["server-compress"]) {
   server.use(compression({ filter: () => true }));
@@ -37,6 +37,11 @@ if (config["server-compress"]) {
 server.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store");
   next();
+});
+
+server.get("/", (req, res) => {
+  console.log('GET: /')
+  res.json({ message: "Ok" });
 });
 
 // Performance API
@@ -55,7 +60,6 @@ server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => 
     }
     next();
   });
-
 });
 
 // Public file hosting
