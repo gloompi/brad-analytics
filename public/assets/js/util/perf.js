@@ -64,7 +64,7 @@
     data.load = navEntry.loadEventStart;
 
     var payload = JSON.stringify(data);
-    navigator.sendBeacon("/api/perf", payload);
+    navigator.sendBeacon("/analytics", payload);
     console.log("Sending performance:", payload);
   });
 
