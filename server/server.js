@@ -15,14 +15,24 @@ const config = JSON.parse(fs.readFileSync("package.json")).config;
 
 const publicDir = path.resolve(__dirname, "../public");
 const logDir = path.resolve(__dirname, "../logs");
-const logFile = path.resolve(logDir, "perf.log.csv");
+const clsFile = path.resolve(logDir, "perf.cls.csv");
+const fidFile = path.resolve(logDir, "perf.fid.csv");
+const lcpFile = path.resolve(logDir, "perf.lcp.csv");
+
+const fileNames = { LCP: lcpFile, CLS: clsFile, FID: fidFile };
 
 // Setup logfile
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
-if (!fs.existsSync(logFile)) {
-  fs.writeFileSync(logFile, "time,url,dcl,load,fcp,lcp,cls,fid\n", { flag: "wx" });
+if (!fs.existsSync(clsFile)) {
+  fs.writeFileSync(clsFile, "time,url,val,delta,id\n", { flag: "wx" });
+}
+if (!fs.existsSync(fidFile)) {
+  fs.writeFileSync(fidFile, "time,url,val,delta,id\n", { flag: "wx" });
+}
+if (!fs.existsSync(lcpFile)) {
+  fs.writeFileSync(lcpFile, "time,url,val,delta,id\n", { flag: "wx" });
 }
 
 // Server Basic Setup
@@ -47,10 +57,17 @@ server.get("/", (req, res) => {
 // Performance API
 server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => {
   const now = new Date().getTime() / 1000;
-  const record = `${now},${req.body.url},${req.body.dcl},${req.body.load},${req.body.fcp},${req.body.lcp},${req.body.cls},${req.body.fid}`;
+  const record = `${now},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
   console.log(record);
 
-  fs.appendFile(logFile, `${record}\n`, (err) => {
+  const fileName = fileNames[(req.body.name || "").toUpperCase()];
+
+  if (!fileName) {
+    res.json({ message: "No such metric", value: req.body.name });
+    return
+  }
+
+  fs.appendFile(fileName, `${record}\n`, (err) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
