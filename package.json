@@ -4,7 +4,7 @@
   "description": "Example website for 'Improving Web Performance' training",
   "main": "server/server.js",
   "scripts": {
-    "live": "pm2 server/server.js",
+    "live": "pm2 start server/server.js",
     "imagemin": "node ./tools/imageOptimizer.js",
     "start": "nodemon server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
