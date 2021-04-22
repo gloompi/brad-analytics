@@ -26,13 +26,13 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 if (!fs.existsSync(clsFile)) {
-  fs.writeFileSync(clsFile, "time,url,val,delta,id\n", { flag: "wx" });
+  fs.writeFileSync(clsFile, "time,agent,url,val,delta,id\n", { flag: "wx" });
 }
 if (!fs.existsSync(fidFile)) {
-  fs.writeFileSync(fidFile, "time,url,val,delta,id\n", { flag: "wx" });
+  fs.writeFileSync(fidFile, "time,agent,url,val,delta,id\n", { flag: "wx" });
 }
 if (!fs.existsSync(lcpFile)) {
-  fs.writeFileSync(lcpFile, "time,url,val,delta,id\n", { flag: "wx" });
+  fs.writeFileSync(lcpFile, "time,agent,url,val,delta,id\n", { flag: "wx" });
 }
 
 // Server Basic Setup
@@ -57,7 +57,7 @@ server.get("/", (req, res) => {
 // Performance API
 server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => {
   const now = new Date().getTime() / 1000;
-  const record = `${now},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
+  const record = `${now},${req.body.agent},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
   console.log(record);
 
   const fileName = fileNames[(req.body.name || "").toUpperCase()];
