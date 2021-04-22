@@ -10,6 +10,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const compression = require("compression");
+const csv = require('csvtojson');
 
 const config = JSON.parse(fs.readFileSync("package.json")).config;
 
@@ -55,6 +56,19 @@ server.get("/", (req, res) => {
 });
 
 // Performance API
+server.get('/analytics/:name', (req, res) => {
+  const fileName = fileNames[req.params.name.toUpperCase()];
+
+  csv()
+    .fromFile(fileName)
+    .then((jsonObj)=>{
+      res.json({ data: jsonObj });
+    })
+    .catch(err => {
+      res.json({ err });
+    });
+});
+
 server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => {
   const now = new Date().getTime() / 1000;
   const record = `${now},${req.body.agent},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
