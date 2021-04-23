@@ -50,11 +50,6 @@ server.use((req, res, next) => {
   next();
 });
 
-server.get("/", (req, res) => {
-  console.log('GET: /')
-  res.json({ message: "Ok" });
-});
-
 // Performance API
 server.get('/analytics/:name', (req, res) => {
   const fileName = fileNames[req.params.name.toUpperCase()];
