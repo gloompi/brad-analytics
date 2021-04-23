@@ -27,6 +27,19 @@ function fetchData(metric) {
     .catch(err => console.error(err));
 };
 
+function createMessage(val, threshold) {
+  const node = document.createElement('span');
+  node.style = `padding: 15px 25px; border-radius: 10px; color: #fff; background-color: ${val === '-' ? 'orange' : val < threshold ? 'green' : 'red'}`;
+  node.appendChild(document.createTextNode(val.slice(0, 4)));
+
+  const p = document.createElement('p');
+  p.appendChild(document.createTextNode('75th percentile value: '));
+  p.appendChild(node);
+  p.appendChild(document.createTextNode(`threshold is ${threshold}`))
+
+  return p;
+}
+
 (function() {
   document.addEventListener('DOMContentLoaded', async () => {
     const clsContainer = document.querySelector('#cls');
@@ -36,22 +49,35 @@ function fetchData(metric) {
     const { data: clsData } = await fetchData(metrics.CLS);
     const { data: lcpData } = await fetchData(metrics.LCP);
     const { data: fidData } = await fetchData(metrics.FID);
-    
-    const cls75thPercentile = p75(clsData.sort((a, b) => a.val - b.val).map(({ val }) => val));
-    const lcp75thPercentile = p75(lcpData.sort((a, b) => a.val - b.val).map(({ val }) => val));
-    const fid75thPercentile = p75(fidData.sort((a, b) => a.val - b.val).map(({ val }) => val));
+
+    const clsMobile = clsData.filter(({ agent }) => agent === 'mobile');
+    const clsDesktop = clsData.filter(({ agent }) => agent !== 'mobile');
+    const lcpMobile = lcpData.filter(({ agent }) => agent === 'mobile');
+    const lcpDesktop = lcpData.filter(({ agent }) => agent !== 'mobile');
+    const fidMobile = fidData.filter(({ agent }) => agent === 'mobile');
+    const fidDesktop = fidData.filter(({ agent }) => agent !== 'mobile');
+
+    const clsMobile75thPercentile = p75(clsMobile.sort((a, b) => a.val - b.val).map(({ val }) => val));
+    const clsDesktop75thPercentile = p75(clsDesktop.sort((a, b) => a.val - b.val).map(({ val }) => val));
+    const lcpMobile75thPercentile = p75(lcpMobile.sort((a, b) => a.val - b.val).map(({ val }) => val));
+    const lcpDesktop75thPercentile = p75(lcpDesktop.sort((a, b) => a.val - b.val).map(({ val }) => val));
+    const fidMobile75thPercentile = p75(fidMobile.sort((a, b) => a.val - b.val).map(({ val }) => val));
+    const fidDesktop75thPercentile = p75(fidDesktop.sort((a, b) => a.val - b.val).map(({ val }) => val));
 
     [
-      { container: clsContainer, val: cls75thPercentile, threshold: thresholds.CLS[0] },
-      { container: lcpContainer, val: lcp75thPercentile, threshold: thresholds.LCP[0] },
-      { container: fidContainer, val: fid75thPercentile, threshold: thresholds.FID[0] },
-    ].forEach(({ container, val, threshold }) => {
-      const node = document.createElement('span');
-      node.style = `padding: 15px 25px; border-radius: 10px; color: #fff; background-color: ${val < threshold ? 'green' : 'red'}`;
-      node.appendChild(document.createTextNode(val));
-      container.appendChild(document.createTextNode('75th percentile value: '));
-      container.appendChild(node);
-      container.appendChild(document.createTextNode(`threshold is ${threshold}`));
+      { container: clsContainer, desktop: clsDesktop75thPercentile, mobile: clsMobile75thPercentile, threshold: thresholds.CLS[0] },
+      { container: lcpContainer, desktop: lcpDesktop75thPercentile, mobile: lcpMobile75thPercentile, threshold: thresholds.LCP[0] },
+      { container: fidContainer, desktop: fidDesktop75thPercentile, mobile: fidMobile75thPercentile, threshold: thresholds.FID[0] },
+    ].forEach(({ container, desktop, mobile, threshold }) => {
+      const desktopMessage = createMessage(desktop, threshold);
+      const mobileMessage = createMessage(mobile, threshold);
+      const desktopHeader = document.createElement('h3');
+      const mobileHeader = document.createElement('h3');
+      
+      container.appendChild(desktopHeader.appendChild(document.createTextNode('Desktop: ')))
+      container.appendChild(desktopMessage);
+      container.appendChild(mobileHeader.appendChild(document.createTextNode('Mobile: ')))
+      container.appendChild(mobileMessage);
     });
   });
 }());
