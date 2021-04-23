@@ -11,6 +11,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const csv = require('csvtojson');
+const { isMobile } = require('./helpers');
 
 const config = JSON.parse(fs.readFileSync("package.json")).config;
 
@@ -66,7 +67,7 @@ server.get('/analytics/:name', (req, res) => {
 
 server.post("/analytics", bodyParser.json({ type: "*/*" }), (req, res, next) => {
   const now = new Date().getTime() / 1000;
-  const record = `${now},${req.body.agent},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
+  const record = `${now},${isMobile.any(req.body.agent) ? 'mobile' : 'desktop'},${req.body.url},${req.body.value},${req.body.delta},${req.body.id}`;
   console.log(record);
 
   const fileName = fileNames[(req.body.name || "").toUpperCase()];
