@@ -1,3 +1,7 @@
+h2 {
+  margin: 0 50px;
+}
+
 .main {
   padding-top: 25px;
 }
@@ -7,17 +11,48 @@
   text-align: center;
 }
 
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 50px;
+}
+
+.container > * {
+  min-width: 50%;
+}
+
 .metrics__list {
   display: flex;
   flex-direction: column;
-  margin: 0 50px;
   list-style-type: none;
+  width: 100%;
 }
 
 .metrics__item {
-  padding: 25px 0;
+  width: 100%;
+  padding-bottom: 25px;
+}
+
+.metrics__item h2 {
+  width: 100%;
+}
+
+.metrics__item h3 {
+  width: 100%;
 }
 
 .metrics__item span {
   margin-right: 15px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container > * {
+    width: 100%;
+    min-width: 100%;
+  }
 }
