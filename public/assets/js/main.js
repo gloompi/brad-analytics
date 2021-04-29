@@ -143,6 +143,6 @@ function pagesSummary({ clsData, fidData, lcpData }) {
     const { data: fidData } = await fetchData(metrics.FID);
 
     originSummary({ clsData, lcpData, fidData });
-    pagesSummary({ clsData, lcpData, fidData });
+    // pagesSummary({ clsData, lcpData, fidData });
   });
 }());
