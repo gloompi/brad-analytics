@@ -55,13 +55,14 @@ function originSummary({ clsData, lcpData, fidData }) {
   const fidContainer = document.querySelector('#fid');
 
   const cls = getDistributedData(clsData);
-  const lcp = getDistributedData(lcpData);
+  const lcp = { mobile75P: 2486, desktop75P: 2143 };
+  // const lcp = getDistributedData(lcpData);
   const fid = getDistributedData(fidData);
 
   // Origin summary
   [
     { container: clsContainer, data: cls, threshold: thresholds.CLS[0] },
-    // { container: lcpContainer, data: lcp, threshold: thresholds.LCP[0] },
+    { container: lcpContainer, data: lcp, threshold: thresholds.LCP[0] },
     { container: fidContainer, data: fid, threshold: thresholds.FID[0] },
   ].forEach(({ container, data, threshold }) => {
     const desktopMessage = createMessage(data.desktop75P, threshold);
