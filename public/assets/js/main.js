@@ -55,7 +55,7 @@ function originSummary({ clsData, lcpData, fidData }) {
   const fidContainer = document.querySelector('#fid');
 
   const cls = getDistributedData(clsData);
-  const lcp = { mobile75P: 2486, desktop75P: 2143 };
+  const lcp = { mobile75P: '2486', desktop75P: '2143' };
   // const lcp = getDistributedData(lcpData);
   const fid = getDistributedData(fidData);
 
